@@ -49,14 +49,14 @@ try:
 
     if maxSpp > 0:
         m.clock.exitFrame = maxSpp + 1
-    m.frameCapture.outputDir = "../../../{}".format(outputDir)
-    m.frameCapture.baseFilename = sceneName
+        m.frameCapture.outputDir = "../../../{}".format(outputDir)
+        m.frameCapture.baseFilename = sceneName
 
-    saveInterval = 5000
-    frameCount = (maxSpp + saveInterval - 1) // saveInterval
-    savedFrames = [i + saveInterval for i in range(0, frameCount * saveInterval, saveInterval)]
-    # print(savedFrames)
-    m.frameCapture.addFrames(m.activeGraph, savedFrames)
+        saveInterval = 5000
+        frameCount = (maxSpp + saveInterval - 1) // saveInterval
+        savedFrames = [i + saveInterval for i in range(0, frameCount * saveInterval, saveInterval)]
+        # print(savedFrames)
+        m.frameCapture.addFrames(m.activeGraph, savedFrames)
 
 except NameError:
     None
