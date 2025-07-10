@@ -70,7 +70,7 @@ extern "C" __declspec(dllexport) const char* getProjDir()
     return PROJECT_DIR;
 }
 
-extern "C" __declspec(dllexport) void getPasses(Falcor::RenderPassLibrary& lib)
+extern "C" __declspec(dllexport) void getPasses(Falcor::RenderPassLibrary & lib)
 {
     lib.registerClass("ErrorMeasurePass", "Error Measurement Pass", ErrorMeasurePass::create);
     ScriptBindings::registerBinding(regErrorMeasurePass);
@@ -165,7 +165,7 @@ void ErrorMeasurePass::execute(RenderContext* pRenderContext, const RenderData& 
         mpDifferenceTexture->getHeight() != height)
     {
         mpDifferenceTexture = Texture::create2D(width, height, ResourceFormat::RGBA32Float, 1, 1, nullptr,
-                                                Resource::BindFlags::ShaderResource | Resource::BindFlags::UnorderedAccess);
+            Resource::BindFlags::ShaderResource | Resource::BindFlags::UnorderedAccess);
         assert(mpDifferenceTexture);
     }
 
@@ -321,7 +321,7 @@ void ErrorMeasurePass::renderUI(Gui::Widgets& widget)
     {
         widget.radioButtons(sOutputSelectionButtons, reinterpret_cast<uint32_t&>(mSelectedOutputId));
         widget.tooltip("Press 'O' to change output mode; hold 'Shift' to reverse the cycling.\n\n"
-                         "Note: Difference is computed based on current - reference value.", true);
+            "Note: Difference is computed based on current - reference value.", true);
     }
     else
     {
@@ -331,7 +331,7 @@ void ErrorMeasurePass::renderUI(Gui::Widgets& widget)
 
     widget.checkbox("Ignore background", mIgnoreBackground);
     widget.tooltip("Do not include background pixels in the error measurements.\n"
-                      "This option requires the optional input '" + std::string(kInputChannelWorldPosition) + "' to be bound", true);
+        "This option requires the optional input '" + std::string(kInputChannelWorldPosition) + "' to be bound", true);
     widget.checkbox("Compute L2 error (rather than L1)", mComputeSquaredDifference);
     widget.checkbox("Compute RGB average", mComputeAverage);
     widget.tooltip("When enabled, the average error over the RGB components is computed when creating the difference image.\n"
@@ -339,7 +339,7 @@ void ErrorMeasurePass::renderUI(Gui::Widgets& widget)
 
     widget.checkbox("Use loaded reference image", mUseLoadedReference);
     widget.tooltip("Take the reference from the loaded image instead or the input channel.\n\n"
-                     "If the chosen reference doesn't exist, the error measurements are disabled.", true);
+        "If the chosen reference doesn't exist, the error measurements are disabled.", true);
     // Display the filename of the reference file.
     const std::string referenceText = "Reference: " + getFilename(mReferenceImagePath);
     widget.text(referenceText);
@@ -369,11 +369,11 @@ void ErrorMeasurePass::renderUI(Gui::Widgets& widget)
         std::ostringstream oss;
         oss << std::scientific;
         oss << (mComputeSquaredDifference ? "MSE (avg): " : "L1 error (avg): ") <<
-          (mReportRunningError ? mRunningAvgError : mMeasurements.avgError) << std::endl;
+            (mReportRunningError ? mRunningAvgError : mMeasurements.avgError) << std::endl;
         oss << (mComputeSquaredDifference ? "MSE (rgb): " : "L1 error (rgb): ") <<
-          (mReportRunningError ? mRunningError.r : mMeasurements.error.r) << ", " <<
-          (mReportRunningError ? mRunningError.g : mMeasurements.error.g) << ", " <<
-          (mReportRunningError ? mRunningError.b : mMeasurements.error.b);
+            (mReportRunningError ? mRunningError.r : mMeasurements.error.r) << ", " <<
+            (mReportRunningError ? mRunningError.g : mMeasurements.error.g) << ", " <<
+            (mReportRunningError ? mRunningError.b : mMeasurements.error.b);
         widget.text(oss.str());
     }
     else
@@ -431,7 +431,7 @@ void ErrorMeasurePass::loadReference()
         mReferenceImagePath = "";
     }
 
-    mUseLoadedReference = mpReferenceTexture != nullptr;
+    //mUseLoadedReference = mpReferenceTexture != nullptr;
     mRunningAvgError = -1.f;   // Mark running error values as invalid.
 }
 
