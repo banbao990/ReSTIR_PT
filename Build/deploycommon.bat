@@ -30,7 +30,7 @@ if %IsDebug% EQU 0 (
     rem Needed for OpenVDB (debug version links to release version of Half_2.5)
     robocopy %ExtDir%\deps\bin\ %OutDir% Half-2_5.* /r:0 >nul
 )
-robocopy %ExtDir%\python\ %OutDir% Python36*.dll /r:0 >nul
+robocopy %ExtDir%\python\ %OutDir% Python310*.dll /r:0 >nul
 robocopy %ExtDir%\python %OutDir%\Python /E /r:0 >nul
 robocopy %ExtDir%\slang\bin\windows-x64\release %OutDir% *.dll /r:0 >nul
 robocopy %ExtDir%\WinPixEventRuntime\bin\x64 %OutDir% WinPixEventRuntime.dll /r:0 >nul

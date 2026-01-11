@@ -22,7 +22,8 @@
         <package name="WinPixEventRuntime" version="1.0.190604001" platforms="windows-x86_64" />
     </dependency>
     <dependency name="python" linkPath="../Externals/.packman/python">
-        <package name="python" version="3.6.7-${platform}" platforms="windows-x86_64 linux-x86_64" />
+        <package name="python" version="3.10.11+nv1-${platform}" platforms="windows-x86_64 linux-x86_64" />
+        <!--<package name="python" version="3.6.7-${platform}" platforms="windows-x86_64 linux-x86_64" />-->
     </dependency>
     <dependency name="nanovdb" linkPath="../Externals/.packman/nanovdb">
         <package name="nanovdb" version="pnanovdb-90289150" />
