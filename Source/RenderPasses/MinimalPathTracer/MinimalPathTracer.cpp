@@ -34,9 +34,16 @@ extern "C" __declspec(dllexport) const char* getProjDir()
     return PROJECT_DIR;
 }
 
+static void regMinimalPathTracer(pybind11::module& m)
+{
+    pybind11::class_<MinimalPathTracer, RenderPass, MinimalPathTracer::SharedPtr> pass(m, "MinimalPathTracer");
+    pass.def("setPythonCallback", &MinimalPathTracer::setPythonCallback);
+}
+
 extern "C" __declspec(dllexport) void getPasses(Falcor::RenderPassLibrary& lib)
 {
     lib.registerClass("MinimalPathTracer", "Minimal path tracer", MinimalPathTracer::create);
+    ScriptBindings::registerBinding(regMinimalPathTracer);
 }
 
 namespace
@@ -114,6 +121,31 @@ RenderPassReflection MinimalPathTracer::reflect(const CompileData& compileData)
     addRenderPassOutputs(reflector, kOutputChannels);
 
     return reflector;
+}
+
+void MinimalPathTracer::testPythonCallback(uint32_t frameCount)
+{
+    // Call Python code every 100 frames
+    mPythonCallFrameCounter++;
+    if (mPythonCallFrameCounter >= 100)
+    {
+        mPythonCallFrameCounter = 0;
+
+        logInfo("MinimalPathTracer: Executing Python callback at frame " + std::to_string(mFrameCount));
+
+        // Call the Python callback if registered
+        if (mPythonCallback)
+        {
+            try
+            {
+                mPythonCallback(mFrameCount);
+            }
+            catch (const std::exception& e)
+            {
+                logError("Error in Python callback: " + std::string(e.what()));
+            }
+        }
+    }
 }
 
 void MinimalPathTracer::execute(RenderContext* pRenderContext, const RenderData& renderData)
@@ -198,6 +230,8 @@ void MinimalPathTracer::execute(RenderContext* pRenderContext, const RenderData&
     // Spawn the rays.
     mpScene->raytrace(pRenderContext, mTracer.pProgram.get(), mTracer.pVars, uint3(targetDim, 1));
 
+    testPythonCallback(mFrameCount);
+
     mFrameCount++;
 }
 
@@ -205,7 +239,9 @@ void MinimalPathTracer::renderUI(Gui::Widgets& widget)
 {
     bool dirty = false;
 
-    dirty |= widget.var("Max bounces", mMaxBounces, 0u, 1u<<16);
+    widget.checkbox("Enable Python callback", mEnablePythonCallback);
+
+    dirty |= widget.var("Max bounces", mMaxBounces, 0u, 1u << 16);
     widget.tooltip("Maximum path length for indirect illumination.\n0 = direct only\n1 = one indirect bounce etc.", true);
 
     dirty |= widget.checkbox("Evaluate direct illumination", mComputeDirect);
@@ -227,6 +263,7 @@ void MinimalPathTracer::setScene(RenderContext* pRenderContext, const Scene::Sha
     mTracer.pBindingTable = nullptr;
     mTracer.pVars = nullptr;
     mFrameCount = 0;
+    mPythonCallFrameCounter = 0;
 
     // Set new scene.
     mpScene = pScene;

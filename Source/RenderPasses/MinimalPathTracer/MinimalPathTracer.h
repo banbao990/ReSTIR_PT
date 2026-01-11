@@ -28,6 +28,7 @@
 #pragma once
 #include "Falcor.h"
 #include "Utils/Sampling/SampleGenerator.h"
+#include <functional>
 
 using namespace Falcor;
 
@@ -56,6 +57,14 @@ public:
     virtual bool onMouseEvent(const MouseEvent& mouseEvent) override { return false; }
     virtual bool onKeyEvent(const KeyboardEvent& keyEvent) override { return false; }
 
+    // Python callback registration
+    void setPythonCallback(std::function<void(uint32_t)> callback) {
+        logInfo("MinimalPathTracer: Python callback registered.");
+        mPythonCallback = callback;
+    }
+
+    void testPythonCallback(uint32_t frameCount);
+
 private:
     MinimalPathTracer(const Dictionary& dict);
     void parseDictionary(const Dictionary& dict);
@@ -72,6 +81,11 @@ private:
     // Runtime data
     uint                        mFrameCount = 0;            ///< Frame count since scene was loaded.
     bool                        mOptionsChanged = false;
+
+    // Python callback support
+    bool mEnablePythonCallback = false;
+    uint                        mPythonCallFrameCounter = 0;
+    std::function<void(uint32_t)> mPythonCallback;         
 
     // Ray tracing program.
     struct
