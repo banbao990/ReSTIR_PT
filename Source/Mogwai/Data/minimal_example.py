@@ -1,6 +1,9 @@
 import sys
 from falcor import *
 
+import torch
+print("Torch version:", torch.__version__)
+
 # print python version
 print("Python version:", sys.version)
 

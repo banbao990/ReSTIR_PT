@@ -46,6 +46,12 @@ namespace Falcor
             // Py_SetPythonHome in Python < 3.7 takes a non-const wstr*, but guarantees that the contents
             // will not be modified by Python. As such, casting away the const should be safe.
             Py_SetPythonHome(const_cast<wchar_t*>(pythonHome.c_str()));
+            static std::wstring pythonPath = string_2_wstring(
+                getExecutableDirectory() + "/Python/FRadius/;" +
+                getExecutableDirectory() + "/Python/FRadius/Lib/;" +
+                getExecutableDirectory() + "/Python/FRadius/Lib/site-packages/;"
+            );
+            _wputenv_s(L"PYTHONPATH", pythonPath.c_str());
 #endif
 
             try
